@@ -166,11 +166,13 @@ a:hover {
   backdrop-filter: blur(8px);
 }
 
-.btn:hover {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 20px var(--glow-blue);
-  color: var(--accent-blue);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .btn:hover {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 20px var(--glow-blue);
+    color: var(--accent-blue);
+    transform: translateY(-1px);
+  }
 }
 
 .btn-primary {
@@ -195,11 +197,13 @@ a:hover {
   transition: all var(--transition);
 }
 
-.card:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow);
-  transform: translateY(-3px);
+@media (hover: hover) {
+  .card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow);
+    transform: translateY(-3px);
+  }
 }
 
 /* --- Tags --- */

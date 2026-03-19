@@ -153,16 +153,18 @@ const categoryCommands = [
     transition: background var(--transition-fast);
   }
 
-  .skill-pkg:hover {
-    background: var(--glow-blue);
-  }
+  @media (hover: hover) {
+    .skill-pkg:hover {
+      background: var(--glow-blue);
+    }
 
-  .skill-pkg:hover .skill-pkg-name {
-    color: var(--accent-blue);
-  }
+    .skill-pkg:hover .skill-pkg-name {
+      color: var(--accent-blue);
+    }
 
-  .skill-pkg:hover .skill-pkg-dot {
-    box-shadow: 0 0 6px var(--accent-blue);
+    .skill-pkg:hover .skill-pkg-dot {
+      box-shadow: 0 0 6px var(--accent-blue);
+    }
   }
 
   .skill-pkg-dot {

@@ -89,25 +89,27 @@ const tr = t(locale);
     transition: all 0.3s ease;
   }
 
-  .contact-card:hover {
-    border-color: var(--accent-blue);
-    box-shadow: var(--shadow), 0 0 20px var(--glow-blue);
-    transform: translateY(-3px);
-  }
+  @media (hover: hover) {
+    .contact-card:hover {
+      border-color: var(--accent-blue);
+      box-shadow: var(--shadow), 0 0 20px var(--glow-blue);
+      transform: translateY(-3px);
+    }
 
-  .contact-card:hover .contact-icon {
-    background: var(--accent-blue);
-    box-shadow: 0 0 16px var(--glow-blue);
-  }
+    .contact-card:hover .contact-icon {
+      background: var(--accent-blue);
+      box-shadow: 0 0 16px var(--glow-blue);
+    }
 
-  .contact-card:hover .contact-icon svg {
-    color: #fff;
-    fill: #fff;
-  }
+    .contact-card:hover .contact-icon svg {
+      color: #fff;
+      fill: #fff;
+    }
 
-  .contact-card:hover .contact-arrow {
-    transform: translate(2px, -2px);
-    color: var(--accent-blue);
+    .contact-card:hover .contact-arrow {
+      transform: translate(2px, -2px);
+      color: var(--accent-blue);
+    }
   }
 
   .contact-icon {
