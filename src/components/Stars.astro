@@ -1,0 +1,309 @@
+---
+/**
+ * CSS-only sky background.
+ * Dark: star field + aurora. Light: warm atmospheric gradient.
+ * Stars generated at build time — zero runtime JS.
+ */
+function genStars(count: number, maxBlur: number): string {
+  const s: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const x = Math.floor(Math.random() * 2560);
+    const y = Math.floor(Math.random() * 2560);
+    const op = (0.25 + Math.random() * 0.75).toFixed(2);
+    const blur = (Math.random() * maxBlur).toFixed(1);
+    s.push(`${x}px ${y}px ${blur}px 0px rgba(255,255,255,${op})`);
+  }
+  return s.join(',');
+}
+
+const sm = genStars(350, 0);
+const md = genStars(120, 0.5);
+const lg = genStars(40, 1.2);
+
+/**
+ * Pre-compute box-shadows for 7 moon phases (no new moon).
+ * Northern hemisphere perspective.
+ */
+function moonShadow(phase: number): string {
+  const sky = 'rgba(5,10,24,0.95)';
+  const r = 16; // half of 32px
+
+  if (phase > 0.47 && phase < 0.53) return 'inset -4px -2px 6px rgba(0,0,0,0.15)';
+
+  if (phase <= 0.5) {
+    const t = phase / 0.5;
+    const offset = r * 2 * (1 - t);
+    const blur = Math.max(2, offset * 0.4);
+    return `inset ${offset.toFixed(1)}px 0 ${blur.toFixed(1)}px ${sky}`;
+  } else {
+    const t = (phase - 0.5) / 0.5;
+    const offset = r * 2 * t;
+    const blur = Math.max(2, offset * 0.4);
+    return `inset -${offset.toFixed(1)}px 0 ${blur.toFixed(1)}px ${sky}`;
+  }
+}
+
+// 7 phases (no new moon) with their shadow values
+const phases = [
+  { name: 'waxing-crescent', value: 0.1 },
+  { name: 'first-quarter',   value: 0.25 },
+  { name: 'waxing-gibbous',  value: 0.37 },
+  { name: 'full',            value: 0.5 },
+  { name: 'waning-gibbous',  value: 0.63 },
+  { name: 'last-quarter',    value: 0.75 },
+  { name: 'waning-crescent', value: 0.9 },
+];
+
+const phaseShadows = phases.map(p => ({
+  name: p.name,
+  shadow: moonShadow(p.value),
+}));
+---
+
+<div class="sky" aria-hidden="true">
+  <!-- Dark: stars + aurora -->
+  <div class="stars-layer">
+    <div class="aurora"></div>
+    <div class="stars s1" style={`box-shadow:${sm}`}></div>
+    <div class="stars s2" style={`box-shadow:${md}`}></div>
+    <div class="stars s3" style={`box-shadow:${lg}`}></div>
+  </div>
+
+  <!-- Moon — phase cycles via JS after each orbit -->
+  <div class="celestial moon" id="moon"
+    data-phases={JSON.stringify(phaseShadows.map(p => p.shadow))}
+  ></div>
+
+  <!-- Shooting stars -->
+  <div class="shooting-star ss-1"></div>
+  <div class="shooting-star ss-2"></div>
+  <div class="shooting-star ss-3"></div>
+  <div class="shooting-star ss-4"></div>
+  <div class="shooting-star ss-5"></div>
+</div>
+
+<style is:global>
+  /* All global because Astro drops scoping on elements with large dynamic style attrs */
+  .sky {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    /* Dark: deep space with subtle horizon glow */
+    background: radial-gradient(ellipse at 50% 100%, rgba(10, 17, 40, 1) 0%, #050a18 70%);
+    transition: background 0.8s ease;
+  }
+
+  .stars-layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    background: transparent;
+  }
+
+  .s1 { animation: twinkle 6s ease-in-out infinite alternate; }
+  .s2 { animation: twinkle 4s ease-in-out infinite alternate-reverse; }
+  .s3 { animation: twinkle-bright 5s ease-in-out infinite alternate; }
+
+  .aurora {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 80%, rgba(96, 165, 250, 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 30%, rgba(167, 139, 250, 0.04) 0%, transparent 45%),
+      radial-gradient(ellipse at 50% 60%, rgba(45, 212, 191, 0.025) 0%, transparent 40%);
+    animation: aurora-drift 25s ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+  }
+
+  @keyframes twinkle-bright {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+  }
+
+  @keyframes aurora-drift {
+    0% { transform: scale(1) translate(0, 0); }
+    33% { transform: scale(1.05) translate(2%, -1%); }
+    66% { transform: scale(0.98) translate(-1%, 2%); }
+    100% { transform: scale(1.02) translate(1%, -1%); }
+  }
+
+  /* Celestial bodies */
+  .celestial {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+  }
+
+  /* Moon — real phase calculated at build time */
+  .moon {
+    width: 32px;
+    height: 32px;
+    left: 0;
+    top: 0;
+    background:
+      /* Large "sea" (Mare) patches */
+      radial-gradient(circle at 35% 30%, rgba(180, 175, 140, 0.5) 0%, transparent 30%),
+      radial-gradient(circle at 60% 55%, rgba(170, 165, 130, 0.4) 0%, transparent 25%),
+      radial-gradient(circle at 45% 70%, rgba(175, 170, 135, 0.35) 0%, transparent 20%),
+      /* Small craters */
+      radial-gradient(circle at 30% 50%, rgba(160, 155, 120, 0.5) 0%, transparent 8%),
+      radial-gradient(circle at 55% 35%, rgba(160, 155, 120, 0.4) 0%, transparent 6%),
+      radial-gradient(circle at 70% 45%, rgba(165, 160, 125, 0.45) 0%, transparent 7%),
+      radial-gradient(circle at 40% 42%, rgba(155, 150, 115, 0.3) 0%, transparent 5%),
+      radial-gradient(circle at 65% 65%, rgba(160, 155, 120, 0.35) 0%, transparent 6%),
+      /* Base surface gradient */
+      radial-gradient(circle at 38% 35%, #f0eccc 0%, #e0dbb8 30%, #ccc8a0 60%, #b8b48a 100%);
+    filter: drop-shadow(0 0 10px rgba(245, 243, 206, 0.3)) drop-shadow(0 0 30px rgba(245, 243, 206, 0.12));
+    animation: drift-moon 100s linear infinite;
+    animation-delay: 2s;
+  }
+
+  /* Moon arc: east (right) to west (left), smooth arc */
+  @keyframes drift-moon {
+    0% {
+      transform: translate(105vw, 45vh) scale(0.9);
+      opacity: 0;
+    }
+    3% { opacity: 1; }
+    20% {
+      transform: translate(82vw, 28vh) scale(0.95);
+    }
+    40% {
+      transform: translate(60vw, 19vh) scale(1);
+    }
+    60% {
+      transform: translate(40vw, 19vh) scale(1);
+    }
+    80% {
+      transform: translate(18vw, 28vh) scale(0.95);
+    }
+    97% { opacity: 1; }
+    100% {
+      transform: translate(-40px, 45vh) scale(0.9);
+      opacity: 0;
+    }
+  }
+
+  /* Shooting stars */
+  .shooting-star {
+    position: absolute;
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.7), transparent);
+    border-radius: 1px;
+    opacity: 0;
+    transform: rotate(-35deg);
+  }
+
+  /* Close/bright — thick, long, vivid */
+  .ss-1 {
+    top: 8%;
+    left: 15%;
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.9), transparent);
+    animation: shoot-3 9s ease-in infinite;
+    animation-delay: 2s;
+  }
+
+  /* Far/faint — thin, short, dim */
+  .ss-2 {
+    top: 45%;
+    left: 75%;
+    width: 50px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.35), transparent);
+    animation: shoot-1 13s ease-in infinite;
+    animation-delay: 7s;
+  }
+
+  /* Close — medium-thick, long */
+  .ss-3 {
+    top: 18%;
+    left: 90%;
+    width: 140px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: shoot-3 16s ease-in infinite;
+    animation-delay: 14s;
+  }
+
+  /* Far — thin, short */
+  .ss-4 {
+    top: 65%;
+    left: 30%;
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), transparent);
+    animation: shoot-1 11s ease-in infinite;
+    animation-delay: 20s;
+  }
+
+  /* Medium distance */
+  .ss-5 {
+    top: 80%;
+    left: 60%;
+    width: 90px;
+    height: 1.5px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), transparent);
+    animation: shoot-2 14s ease-in infinite;
+    animation-delay: 25s;
+  }
+
+  @keyframes shoot-1 {
+    0% { opacity: 0; transform: rotate(-35deg) translateX(0); }
+    1% { opacity: 1; }
+    3% { opacity: 0; transform: rotate(-35deg) translateX(-250px); }
+    100% { opacity: 0; }
+  }
+
+  @keyframes shoot-2 {
+    0% { opacity: 0; transform: rotate(-40deg) translateX(0); }
+    0.8% { opacity: 0.8; }
+    2.5% { opacity: 0; transform: rotate(-40deg) translateX(-400px); }
+    100% { opacity: 0; }
+  }
+
+  @keyframes shoot-3 {
+    0% { opacity: 0; transform: rotate(-30deg) translateX(0); }
+    0.6% { opacity: 1; }
+    2% { opacity: 0; transform: rotate(-30deg) translateX(-550px); }
+    100% { opacity: 0; }
+  }
+</style>
+
+<script is:inline>
+  (function() {
+    var moon = document.getElementById('moon');
+    if (!moon) return;
+
+    var phases = JSON.parse(moon.getAttribute('data-phases') || '[]');
+    if (!phases.length) return;
+
+    // Random starting phase
+    var index = Math.floor(Math.random() * phases.length);
+    moon.style.boxShadow = phases[index];
+
+    // Cycle phase after each orbit (100s animation + 2s delay)
+    var orbitDuration = 102000;
+    setInterval(function() {
+      index = (index + 1) % phases.length;
+      moon.style.boxShadow = phases[index];
+    }, orbitDuration);
+  })();
+</script>

@@ -1,0 +1,189 @@
+---
+import type { Locale } from '../i18n/translations';
+import { t } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+
+const categoryCommands = [
+  'pip list',
+  'npm list --depth=0',
+  'systemctl list-units',
+  'ollama list',
+  'psql \\dt',
+  'which -a',
+];
+---
+
+<section class="section" id="skills">
+  <h2 class="section-title reveal">{tr.skills.title}</h2>
+
+  <div class="skills-grid">
+    {tr.skills.categories.map((cat, i) => (
+      <div class={`skill-card reveal reveal-delay-${Math.min(i + 1, 4)}`}>
+        <div class="skill-bar">
+          <div class="skill-dots">
+            <span class="skill-dot" style="background: #ff5f57;"></span>
+            <span class="skill-dot" style="background: #febc2e;"></span>
+            <span class="skill-dot" style="background: #28c840;"></span>
+          </div>
+          <span class="skill-title">{cat.title}</span>
+          <span class="skill-count">{cat.items.length}</span>
+        </div>
+
+        <div class="skill-body">
+          <div class="skill-cmd">
+            <span class="skill-prompt">$</span> {categoryCommands[i % categoryCommands.length]}
+          </div>
+
+          <div class="skill-items">
+            {cat.items.map(item => (
+              <div class="skill-pkg">
+                <span class="skill-pkg-dot"></span>
+                <span class="skill-pkg-name">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .skill-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  .skill-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow);
+    transform: translateY(-3px);
+  }
+
+  /* Title bar — identical to Projects */
+  .skill-bar {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 0.9rem;
+    min-height: 3.6rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--border);
+    gap: 0.5rem;
+  }
+
+  .skill-dots {
+    display: flex;
+    gap: 0.35rem;
+    flex-shrink: 0;
+  }
+
+  .skill-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .skill-title {
+    flex: 1;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    text-align: center;
+    text-transform: lowercase;
+    letter-spacing: 0.08em;
+  }
+
+  .skill-count {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  /* Body */
+  .skill-body {
+    padding: 1.25rem;
+  }
+
+  .skill-cmd {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skill-prompt {
+    color: var(--accent-teal);
+    margin-right: 0.4rem;
+  }
+
+  /* Package list */
+  .skill-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .skill-pkg {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.4rem;
+    border-radius: 4px;
+    transition: background var(--transition-fast);
+  }
+
+  .skill-pkg:hover {
+    background: var(--glow-blue);
+  }
+
+  .skill-pkg:hover .skill-pkg-name {
+    color: var(--accent-blue);
+  }
+
+  .skill-pkg:hover .skill-pkg-dot {
+    box-shadow: 0 0 6px var(--accent-blue);
+  }
+
+  .skill-pkg-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    flex-shrink: 0;
+    opacity: 0.9;
+    transition: box-shadow var(--transition-fast);
+  }
+
+  .skill-pkg-name {
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    transition: color var(--transition-fast);
+  }
+
+  @media (max-width: 768px) {
+    .skills-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

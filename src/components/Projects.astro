@@ -1,0 +1,240 @@
+---
+import type { Locale } from '../i18n/translations';
+import { t } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+---
+
+<section class="section" id="projects">
+  <!-- Commercial Projects -->
+  <h2 class="section-title reveal">{tr.commercialProjects.title}</h2>
+  <p class="projects-note reveal reveal-delay-1">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+    {tr.commercialProjects.note}
+  </p>
+
+  <div class="projects-grid reveal reveal-delay-2">
+    {tr.commercialProjects.items.map((project) => (
+      <div class="project-terminal commercial">
+        <div class="term-bar">
+          <div class="term-dots">
+            <span class="term-dot" style="background: #ff5f57;"></span>
+            <span class="term-dot" style="background: #febc2e;"></span>
+            <span class="term-dot" style="background: #28c840;"></span>
+          </div>
+          <span class="term-title">{project.name}</span>
+          <svg class="term-lock" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+
+        <div class="term-body">
+          <div class="term-cmd">
+            <span class="t-prompt">$</span> cat /{project.slug}/README.md
+          </div>
+
+          <p class="term-desc">{project.description}</p>
+          <div class="term-tech">
+            {project.tech.map(tech => (
+              <span class="tag">{tech}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Open Source Projects -->
+  <h2 class="section-title oss-title reveal">{tr.projects.title}</h2>
+
+  <div class="projects-grid reveal reveal-delay-1">
+    {tr.projects.items.map((project) => (
+      <a
+        href={project.github}
+        target="_blank"
+        rel="noopener"
+        class="project-terminal"
+      >
+        <div class="term-bar">
+          <div class="term-dots">
+            <span class="term-dot" style="background: #ff5f57;"></span>
+            <span class="term-dot" style="background: #febc2e;"></span>
+            <span class="term-dot" style="background: #28c840;"></span>
+          </div>
+          <span class="term-title">{project.name}</span>
+          <svg class="term-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+          </svg>
+        </div>
+
+        <div class="term-body">
+          <div class="term-cmd">
+            <span class="t-prompt">$</span> cat /{project.name}/README.md
+          </div>
+
+          <p class="term-desc">{project.description}</p>
+
+          <div class="term-tech">
+            {project.tech.map(tech => (
+              <span class="tag">{tech}</span>
+            ))}
+          </div>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .projects-note {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    white-space: nowrap;
+  }
+
+  .projects-note svg {
+    flex-shrink: 0;
+    color: var(--accent-purple);
+  }
+
+  .oss-title {
+    margin-top: 4rem;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: 1.25rem;
+  }
+
+  /* Terminal card */
+  .project-terminal {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    transition: all var(--transition);
+  }
+
+  a.project-terminal {
+    cursor: pointer;
+  }
+
+  .project-terminal:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow);
+    transform: translateY(-3px);
+  }
+
+  a.project-terminal:hover {
+    border-color: var(--accent-blue);
+    box-shadow: var(--shadow), 0 0 20px var(--glow-blue);
+  }
+
+  a.project-terminal:hover .term-arrow {
+    transform: translate(2px, -2px);
+    color: var(--accent-blue);
+  }
+
+  /* Commercial accent */
+  .commercial:hover {
+    border-color: var(--accent-purple);
+    box-shadow: var(--shadow), 0 0 20px var(--glow-purple);
+  }
+
+  /* Title bar */
+  .term-bar {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 0.9rem;
+    min-height: 3.6rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--border);
+    gap: 0.5rem;
+  }
+
+  .term-dots {
+    display: flex;
+    gap: 0.35rem;
+    flex-shrink: 0;
+  }
+
+  .term-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .term-title {
+    flex: 1;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    text-align: center;
+  }
+
+  .term-arrow {
+    color: var(--text-muted);
+    transition: all var(--transition);
+    flex-shrink: 0;
+  }
+
+  .term-lock {
+    color: var(--accent-purple);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  /* Body */
+  .term-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .term-cmd {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .t-prompt {
+    color: var(--accent-teal);
+    margin-right: 0.4rem;
+  }
+
+  .term-desc {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    flex: 1;
+    margin-bottom: 1rem;
+  }
+
+  .term-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: auto;
+  }
+</style>

@@ -1,0 +1,189 @@
+---
+import type { Locale } from '../i18n/translations';
+import { t } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+---
+
+<section class="section" id="experience">
+  <h2 class="section-title reveal">{tr.experience.title}</h2>
+
+  <div class="timeline">
+    {tr.experience.items.map((item, i) => (
+      <div class={`timeline-item reveal reveal-delay-${Math.min(i + 1, 4)}`}>
+        <div class="timeline-marker">
+          <div class="timeline-dot" data-type={item.type}></div>
+          {i < tr.experience.items.length - 1 && <div class="timeline-line"></div>}
+        </div>
+
+        <div class="timeline-card card">
+          <div class="timeline-row">
+            <h3 class="timeline-role">{item.role}</h3>
+            <span class="timeline-type-badge" data-type={item.type}>
+              {item.type === 'work' ? (locale === 'pl' ? 'praca' : 'work') : (locale === 'pl' ? 'edukacja' : 'education')}
+            </span>
+          </div>
+          <div class="timeline-row">
+            <p class="timeline-org">{item.org}</p>
+            <span class="timeline-period">{item.period}</span>
+          </div>
+
+          <ul class="timeline-bullets">
+            {item.bullets.map(bullet => (
+              <li>{bullet}</li>
+            ))}
+          </ul>
+
+          {item.tech && item.tech.length > 0 && (
+            <div class="timeline-tech">
+              {item.tech.map(tech => (
+                <span class="tag">{tech}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1.25rem;
+  }
+
+  /* Marker + line */
+  .timeline-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1.8rem;
+  }
+
+  .timeline-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    border: 2px solid var(--bg-deep);
+    box-shadow: 0 0 12px var(--glow-blue);
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .timeline-dot[data-type='education'] {
+    background: var(--accent-purple);
+    box-shadow: 0 0 12px var(--glow-purple);
+  }
+
+  .timeline-line {
+    width: 1px;
+    flex: 1;
+    background: linear-gradient(to bottom, var(--border-hover), transparent);
+    margin-top: 0.5rem;
+  }
+
+  /* Card */
+  .timeline-card {
+    position: relative;
+  }
+
+  /* Row: left + right aligned */
+  .timeline-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .timeline-row + .timeline-row {
+    margin-top: 0.15rem;
+  }
+
+  .timeline-type-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-sm);
+    background: rgba(96, 165, 250, 0.2);
+    color: var(--accent-blue);
+    border: 1px solid rgba(96, 165, 250, 0.25);
+  }
+
+  .timeline-type-badge[data-type='education'] {
+    background: rgba(167, 139, 250, 0.2);
+    color: var(--accent-purple);
+    border-color: rgba(167, 139, 250, 0.25);
+  }
+
+  .timeline-period {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .timeline-role {
+    font-size: 1.05rem;
+    color: var(--text-primary);
+  }
+
+  .timeline-org {
+    font-size: 0.85rem;
+    color: var(--accent-blue);
+    margin-bottom: 0.6rem;
+  }
+
+  /* Bullet points */
+  .timeline-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .timeline-bullets li {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .timeline-bullets li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent-teal);
+    font-weight: 600;
+  }
+
+  .timeline-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  @media (max-width: 768px) {
+    .timeline-row {
+      flex-wrap: wrap;
+    }
+  }
+</style>

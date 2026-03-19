@@ -1,0 +1,131 @@
+---
+import type { Locale } from '../i18n/translations';
+import Stars from '../components/Stars.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Experience from '../components/Experience.astro';
+import Projects from '../components/Projects.astro';
+import Skills from '../components/Skills.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  locale: Locale;
+  title?: string;
+}
+
+const { locale, title = 'Adam Czarnowski — Full-Stack Engineer' } = Astro.props;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content="Adam Czarnowski — Full-Stack Engineer. Workflow automation, AI integrations, data-heavy systems." />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content="Full-Stack Engineer — workflow automation, AI integrations, data-heavy systems." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://boldsamurai.github.io/" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+
+    <!-- Favicon: {ac} logo matching site style -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%23050a18'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-weight='600' font-size='22' fill='%2360a5fa'>%7Bac%7D</text></svg>" />
+
+  </head>
+  <body>
+    <Stars />
+    <Header locale={locale} />
+
+    <div class="fullpage" id="fullpage">
+      <div class="snap-section">
+        <Hero locale={locale} />
+      </div>
+      <div class="snap-section">
+        <About locale={locale} />
+      </div>
+      <div class="snap-section">
+        <Experience locale={locale} />
+      </div>
+      <div class="snap-section">
+        <Projects locale={locale} />
+      </div>
+      <div class="snap-section">
+        <Skills locale={locale} />
+      </div>
+      <div class="snap-section">
+        <Contact locale={locale} />
+        <Footer locale={locale} />
+      </div>
+    </div>
+
+    <!-- Scroll reveal + active nav observers (root = fullpage container) -->
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', function() {
+        var fp = document.getElementById('fullpage');
+        if (!fp) return;
+
+        // Reveal on scroll
+        var revealObs = new IntersectionObserver(
+          function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObs.unobserve(entry.target);
+              }
+            });
+          },
+          { root: fp, threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+        );
+        document.querySelectorAll('.reveal').forEach(function(el) {
+          revealObs.observe(el);
+        });
+
+        // Active nav link
+        var navLinks = document.querySelectorAll('.nav-link');
+        var sections = document.querySelectorAll('.section[id]');
+        var navObs = new IntersectionObserver(
+          function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                navLinks.forEach(function(link) {
+                  link.classList.toggle(
+                    'active',
+                    link.getAttribute('href') === '#' + entry.target.id
+                  );
+                });
+              }
+            });
+          },
+          { root: fp, rootMargin: '-20% 0px -75% 0px' }
+        );
+        sections.forEach(function(s) { navObs.observe(s); });
+
+        // All anchor links scroll inside fullpage container
+        document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+          link.addEventListener('click', function(e) {
+            var href = link.getAttribute('href');
+            if (!href) return;
+            var target = document.querySelector(href);
+            if (!target) return;
+            e.preventDefault();
+            var snapParent = target.closest('.snap-section');
+            var scrollTarget = snapParent ? snapParent.offsetTop : target.offsetTop;
+            fp.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

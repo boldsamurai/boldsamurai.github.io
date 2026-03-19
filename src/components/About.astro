@@ -1,0 +1,224 @@
+---
+import type { Locale } from '../i18n/translations';
+import { t } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+
+const fetchEntries = locale === 'pl' ? [
+  { key: 'Rola', value: 'Full-Stack Engineer' },
+  { key: 'Lokalizacja', value: 'Wrocław, PL' },
+  { key: 'Doświadczenie', value: '4+ lata w branży' },
+  { key: 'Stack', value: 'Python, React, PostgreSQL' },
+  { key: 'Narzędzia', value: 'Claude Code, Git, Docker' },
+  { key: 'OS', value: 'Linux (Ubuntu, Mint, Fedora, Nobara)' },
+  { key: 'Podejście', value: 'klient → analiza → kod → testy → deploy' },
+  { key: 'Filozofia', value: 'realny wpływ > busywork' },
+] : [
+  { key: 'Role', value: 'Full-Stack Engineer' },
+  { key: 'Location', value: 'Wrocław, PL' },
+  { key: 'Experience', value: '4+ years in dev' },
+  { key: 'Stack', value: 'Python, React, PostgreSQL' },
+  { key: 'Tools', value: 'Claude Code, Git, Docker' },
+  { key: 'OS', value: 'Linux (Ubuntu, Mint, Fedora, Nobara)' },
+  { key: 'Approach', value: 'client → analysis → code → tests → deploy' },
+  { key: 'Philosophy', value: 'real impact > busywork' },
+];
+---
+
+<section class="section" id="about">
+  <h2 class="section-title reveal">{tr.about.title}</h2>
+
+  <div class="about-grid">
+    <div class="about-text">
+      {tr.about.paragraphs.map((p, i) => (
+        <p class={`about-paragraph reveal reveal-delay-${i + 1}`}>{p}</p>
+      ))}
+    </div>
+
+    <div class="about-terminal reveal reveal-delay-3">
+      <div class="terminal-bar">
+        <span class="terminal-dot" style="background: #ff5f57;"></span>
+        <span class="terminal-dot" style="background: #febc2e;"></span>
+        <span class="terminal-dot" style="background: #28c840;"></span>
+        <span class="terminal-title">~/boldsamurai</span>
+      </div>
+      <div class="terminal-body">
+        <div class="t-command">
+          <span class="t-prompt">$</span> <span class="t-cmd">fastfetch</span>
+        </div>
+        <div class="fetch-layout">
+          <div class="fetch-logo" aria-hidden="true">
+            <span class="logo-glow">{`{ac}`}</span>
+          </div>
+          <div class="fetch-info">
+            <div class="fetch-title">adam<span class="fetch-at">@</span>boldsamurai</div>
+            <div class="fetch-separator">──────────────────</div>
+            {fetchEntries.map(entry => (
+              <div class="fetch-line">
+                <span class="fetch-key">{entry.key}</span>
+                <span class="fetch-value">{entry.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .about-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .about-paragraph {
+    font-size: 0.95rem;
+    line-height: 1.75;
+  }
+
+  /* Terminal card */
+  .about-terminal {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.9rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .terminal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .terminal-title {
+    margin-left: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .terminal-body {
+    padding: 1.25rem;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    font-family: var(--font-mono);
+  }
+
+  .t-command {
+    margin-bottom: 0.5rem;
+  }
+
+  .t-prompt { color: var(--accent-teal); }
+  .t-cmd { color: var(--accent-blue); }
+
+  /* Fastfetch layout */
+  .fetch-layout {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 0.75rem;
+  }
+
+  .fetch-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  .logo-glow {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    text-shadow:
+      0 0 10px rgba(96, 165, 250, 0.6),
+      0 0 30px rgba(96, 165, 250, 0.3),
+      0 0 60px rgba(96, 165, 250, 0.15);
+    letter-spacing: -0.02em;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    border-radius: var(--radius-md);
+    background: rgba(96, 165, 250, 0.05);
+  }
+
+  .fetch-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .fetch-title {
+    color: var(--accent-blue);
+    font-weight: 600;
+  }
+
+  .fetch-at {
+    color: var(--text-muted);
+  }
+
+  .fetch-separator {
+    color: var(--border-hover);
+    font-size: 0.7rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .fetch-line {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .fetch-key {
+    color: var(--accent-purple);
+    font-weight: 500;
+  }
+
+  .fetch-key:not(:empty)::after {
+    content: ':';
+  }
+
+  .fetch-value {
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .fetch-layout {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .fetch-logo {
+      font-size: 0.7rem;
+    }
+  }
+</style>

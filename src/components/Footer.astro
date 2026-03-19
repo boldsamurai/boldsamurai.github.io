@@ -1,0 +1,52 @@
+---
+import type { Locale } from '../i18n/translations';
+import { t } from '../i18n/utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="footer-copy">
+      &copy; {year} Adam Czarnowski
+    </p>
+    <p class="footer-built">{tr.footer.built}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem var(--content-padding);
+    margin-top: 4rem;
+  }
+
+  .footer-inner {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-copy,
+  .footer-built {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .footer-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>
