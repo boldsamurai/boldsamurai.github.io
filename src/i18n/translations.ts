@@ -257,6 +257,14 @@ const pl: Translations = {
         tech: ['CSS', 'Firefox', 'Catppuccin'],
         github: 'https://github.com/boldsamurai/minimal-cat-userchrome',
       },
+      {
+        name: 'linkedin-post',
+        install: 'git clone boldsamurai/linkedin-post',
+        description:
+          'Interaktywne narzędzie CLI do generowania postów na LinkedIn z różnych źródeł — repozytoriów GitHub, artykułów i notatek. 5 szablonów postów, wsparcie PL/EN, historia w SQLite i iteracyjne dopracowywanie treści.',
+        tech: ['Python', 'Typer', 'Rich', 'Claude API'],
+        github: 'https://github.com/boldsamurai/linkedin-post',
+      },
     ],
   },
   skills: {
@@ -488,6 +496,14 @@ const en: Translations = {
           'A minimal, keyboard-driven Firefox userChrome theme with Catppuccin Macchiato colors. Clean, distraction-free interface.',
         tech: ['CSS', 'Firefox', 'Catppuccin'],
         github: 'https://github.com/boldsamurai/minimal-cat-userchrome',
+      },
+      {
+        name: 'linkedin-post',
+        install: 'git clone boldsamurai/linkedin-post',
+        description:
+          'Interactive CLI tool for generating LinkedIn post drafts from multiple sources — GitHub repos, articles, and notes. 5 post templates, PL/EN support, SQLite history, and iterative draft refinement.',
+        tech: ['Python', 'Typer', 'Rich', 'Claude API'],
+        github: 'https://github.com/boldsamurai/linkedin-post',
       },
     ],
   },
